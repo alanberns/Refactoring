@@ -2,9 +2,10 @@ package ar.edu.unlp.info.oo2.Refactoring;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.SortedSet;
 
 public class Persoona {
-	public List<Llamada> llamadas = new ArrayList<Llamada>();
+	private List<Llamada> llamadas = new ArrayList<Llamada>();
 	public String tipo;
 	public String nombre;
 	public String telefono;
@@ -12,8 +13,14 @@ public class Persoona {
 	public String documento;
 	public Persoonal sistema;
 	
-	public List<Llamada> getLista1() {
-		return llamadas;
+	public List<Llamada> getLlamadas() {
+		return this.llamadas;
+	}
+	public void addLlamada(Llamada llamada) {
+		this.llamadas.add(llamada);
+	}
+	public void removeLlamada(Llamada llamada) {
+		this.llamadas.remove(llamada);
 	}
 	public void setLlamadas(List<Llamada> llamadas) {
 		this.llamadas = llamadas;

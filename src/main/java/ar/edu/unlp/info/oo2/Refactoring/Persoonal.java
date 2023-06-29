@@ -5,16 +5,36 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Persoonal {
-	List<Persoona> usuarios = new ArrayList<Persoona>();
-	List<Llamada> llamadas = new ArrayList<Llamada>();
+	private List<Persoona> usuarios = new ArrayList<Persoona>();
+	private List<Llamada> llamadas = new ArrayList<Llamada>();
 	GuiaTelefonica guiaTelefonica = new GuiaTelefonica();
 	static double DESCUENTO_PERSONA_JURIDICA = 0.15;
 	static double DESCUENTO_PERSONA_FISICA = 0;
 	
+	
+	public List<Llamada> getLlamadas() {
+		return this.llamadas;
+	}
+	public void addLlamada(Llamada llamada) {
+		this.llamadas.add(llamada);
+	}
+	public void removeLlamada(Llamada llamada) {
+		this.llamadas.remove(llamada);
+	}
+	public List<Persoona> getUsuarios() {
+		return this.usuarios;
+	}
+	public void addUsuario(Persoona usuario) {
+		this.usuarios.add(usuario);
+	}
+	public void removeUsuario(Persoona usuario) {
+		this.usuarios.remove(usuario);
+	}
+	
 	public boolean agregarTelefono(String telefono) {
-		boolean encontre = guiaTelefonica.numerosTelefonicos.contains(telefono);
+		boolean encontre = guiaTelefonica.getNumerosTelefonicos().contains(telefono);
 		if (!encontre) {
-			guiaTelefonica.numerosTelefonicos.add(telefono);
+			guiaTelefonica.addNumeroTelefonico(telefono);
 			encontre= true;
 			return encontre;
 		}
@@ -28,22 +48,22 @@ public class Persoonal {
 		Persoona usuario = new Persoona();
 		if (tipo.equals("fisica")) {
 			usuario.setNombre(nombre);
-			String telefono = guiaTelefonica.numerosTelefonicos.last();
-			guiaTelefonica.numerosTelefonicos.remove(telefono);
+			String telefono = guiaTelefonica.getNumerosTelefonicos().last();
+			guiaTelefonica.removeNumeroTelefonico(telefono);
 			usuario.setTipo(tipo);
 			usuario.setTelefono(telefono);
 			usuario.setDocumento(data);
 		}
 		else if (tipo.equals("juridica")) {
-			String telefono = guiaTelefonica.numerosTelefonicos.last();
-			guiaTelefonica.numerosTelefonicos.remove(telefono);
+			String telefono = guiaTelefonica.getNumerosTelefonicos().last();
+			guiaTelefonica.removeNumeroTelefonico(telefono);
 			usuario.nombre =nombre;
 			usuario.tipo =tipo;
 			usuario.telefono = telefono;
 			usuario.cuit =data;
 		}
 		usuario.sistema = this;
-		usuarios.add(usuario);
+		this.addUsuario(usuario);
 		return usuario;
 		
 	}
@@ -53,7 +73,7 @@ public class Persoonal {
 		boolean borre = false;
 		if (listaUsuariosActualizada.size() < usuarios.size()) {
 			this.usuarios = listaUsuariosActualizada;
-			this.guiaTelefonica.numerosTelefonicos.add(usuario.getTelefono());
+			this.guiaTelefonica.addNumeroTelefonico(usuario.getTelefono());
 			borre = true;
 		}
 		return borre;
@@ -66,8 +86,8 @@ public class Persoonal {
 		llamada.setEmisor(usuarioEmisor.telefono);
 		llamada.setRemitente(usuarioRemitente.getTelefono());
 		llamada.duracion= duracion;
-		llamadas.add(llamada);
-		usuarioEmisor.llamadas.add(llamada);
+		this.addLlamada(llamada);
+		usuarioEmisor.addLlamada(llamada);
 		return llamada;
 		
 	}
@@ -82,7 +102,7 @@ public class Persoonal {
 			}
 		} if (usuarioRegistrado == null) return monto;
 		if (usuarioRegistrado != null) {
-			for (Llamada llamada : usuarioRegistrado.llamadas) {
+			for (Llamada llamada : usuarioRegistrado.getLlamadas()) {
 				double montoParcial = 0;
 				if (llamada.tipoDeLlamada == "nacional") {
 					montoParcial += llamada.duracion *3 + (llamada.duracion*3*0.21);
