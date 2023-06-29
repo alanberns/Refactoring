@@ -1,0 +1,4 @@
+Pasos refactorizacion
+
+1: Nombres no autodescriptivos: 
+-Se aplica Rename method, rename parameter, rename field y rename temp.

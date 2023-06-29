@@ -5,16 +5,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Persoonal {
-	List<Persoona> lista1 = new ArrayList<Persoona>();
-	List<Llamada> lista2 = new ArrayList<Llamada>();
-	GuiaTelefonica lista3 = new GuiaTelefonica();
-	static double descuentoJur = 0.15;
-	static double descuentoFis = 0;
+	List<Persoona> usuarios = new ArrayList<Persoona>();
+	List<Llamada> llamadas = new ArrayList<Llamada>();
+	GuiaTelefonica guiaTelefonica = new GuiaTelefonica();
+	static double DESCUENTO_PERSONA_JURIDICA = 0.15;
+	static double DESCUENTO_PERSONA_FISICA = 0;
 	
-	public boolean agregarTelefono(String str) {
-		boolean encontre = lista3.guia.contains(str);
+	public boolean agregarTelefono(String telefono) {
+		boolean encontre = guiaTelefonica.numerosTelefonicos.contains(telefono);
 		if (!encontre) {
-			lista3.guia.add(str);
+			guiaTelefonica.numerosTelefonicos.add(telefono);
 			encontre= true;
 			return encontre;
 		}
@@ -24,89 +24,89 @@ public class Persoonal {
 		}
 	}
 	
-	public Persoona registrarUsuario(String data, String nombre, String t) {
-		Persoona var = new Persoona();
-		if (t.equals("fisica")) {
-			var.setNya(nombre);
-			String tel = lista3.guia.last();
-			lista3.guia.remove(tel);
-			var.setT(t);
-			var.setTel(tel);
-			var.setDoc(data);
+	public Persoona registrarUsuario(String data, String nombre, String tipo) {
+		Persoona usuario = new Persoona();
+		if (tipo.equals("fisica")) {
+			usuario.setNombre(nombre);
+			String telefono = guiaTelefonica.numerosTelefonicos.last();
+			guiaTelefonica.numerosTelefonicos.remove(telefono);
+			usuario.setTipo(tipo);
+			usuario.setTelefono(telefono);
+			usuario.setDocumento(data);
 		}
-		else if (t.equals("juridica")) {
-			String tel = lista3.guia.last();
-			lista3.guia.remove(tel);
-			var.nya =nombre;
-			var.t =t;
-			var.tel = tel;
-			var.cuit =data;
+		else if (tipo.equals("juridica")) {
+			String telefono = guiaTelefonica.numerosTelefonicos.last();
+			guiaTelefonica.numerosTelefonicos.remove(telefono);
+			usuario.nombre =nombre;
+			usuario.tipo =tipo;
+			usuario.telefono = telefono;
+			usuario.cuit =data;
 		}
-		var.sis = this;
-		lista1.add(var);
-		return var;
+		usuario.sistema = this;
+		usuarios.add(usuario);
+		return usuario;
 		
 	}
 	
-	public boolean eliminarUsuario(Persoona p) {
-		List<Persoona> l = p.sis.lista1.stream().filter(persona -> persona != p).collect(Collectors.toList());
+	public boolean eliminarUsuario(Persoona usuario) {
+		List<Persoona> listaUsuariosActualizada = usuario.sistema.usuarios.stream().filter(persona -> persona != usuario).collect(Collectors.toList());
 		boolean borre = false;
-		if (l.size() < lista1.size()) {
-			this.lista1 = l;
-			this.lista3.guia.add(p.getTel());
+		if (listaUsuariosActualizada.size() < usuarios.size()) {
+			this.usuarios = listaUsuariosActualizada;
+			this.guiaTelefonica.numerosTelefonicos.add(usuario.getTelefono());
 			borre = true;
 		}
 		return borre;
 		
 	}
 	
-	public Llamada registrarLlamada(Persoona q, Persoona q2, String t, int d) {
-		Llamada x = new Llamada();
-		x.tipoDeLlamada = t;
-		x.setEmisor(q.tel);
-		x.setRemitente(q2.getTel());
-		x.dur= d;
-		lista2.add(x);
-		q.lista1.add(x);
-		return x;
+	public Llamada registrarLlamada(Persoona usuarioEmisor, Persoona usuarioRemitente, String tipoDeLlamada, int duracion) {
+		Llamada llamada = new Llamada();
+		llamada.tipoDeLlamada = tipoDeLlamada;
+		llamada.setEmisor(usuarioEmisor.telefono);
+		llamada.setRemitente(usuarioRemitente.getTelefono());
+		llamada.duracion= duracion;
+		llamadas.add(llamada);
+		usuarioEmisor.llamadas.add(llamada);
+		return llamada;
 		
 	}
 	
-	public double calcularMontoTotalLlamadas(Persoona p) {
-		double c = 0;
-		Persoona aux = null;
-		for (Persoona pp : lista1) {
-			if (pp.tel == p.getTel()) {
-				aux = pp;
+	public double calcularMontoTotalLlamadas(Persoona usuario) {
+		double monto = 0;
+		Persoona usuarioRegistrado = null;
+		for (Persoona usuarioActual : usuarios) {
+			if (usuarioActual.telefono == usuario.getTelefono()) {
+				usuarioRegistrado = usuarioActual;
 				break;
 			}
-		} if (aux == null) return c;
-		if (aux != null) {
-			for (Llamada l : aux.lista1) {
-				double auxc = 0;
-				if (l.tipoDeLlamada == "nacional") {
-					auxc += l.dur *3 + (l.dur*3*0.21);
-				} else if (l.tipoDeLlamada == "internacional") {
-					auxc += l.dur *200 + (l.dur*200*0.21);
+		} if (usuarioRegistrado == null) return monto;
+		if (usuarioRegistrado != null) {
+			for (Llamada llamada : usuarioRegistrado.llamadas) {
+				double montoParcial = 0;
+				if (llamada.tipoDeLlamada == "nacional") {
+					montoParcial += llamada.duracion *3 + (llamada.duracion*3*0.21);
+				} else if (llamada.tipoDeLlamada == "internacional") {
+					montoParcial += llamada.duracion *200 + (llamada.duracion*200*0.21);
 				}
 				
-				if (aux.t == "fisica") {
-					auxc -= auxc*descuentoFis;
-				} else if(aux.t == "juridica") {
-					auxc -= auxc*descuentoJur;
+				if (usuarioRegistrado.tipo == "fisica") {
+					montoParcial -= montoParcial*DESCUENTO_PERSONA_FISICA;
+				} else if(usuarioRegistrado.tipo == "juridica") {
+					montoParcial -= montoParcial*DESCUENTO_PERSONA_JURIDICA;
 				}
-				c += auxc;
+				monto += montoParcial;
 			}
 		}
-		return c;
+		return monto;
 	}
 
 	public int cantidadDeUsuarios() {
-		return lista1.size();
+		return usuarios.size();
 	}
 
-	public boolean existeUsuario(Persoona persona) {
-		return lista1.contains(persona);
+	public boolean existeUsuario(Persoona usuario) {
+		return usuarios.contains(usuario);
 	}
 	
 }

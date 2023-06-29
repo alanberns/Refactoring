@@ -4,16 +4,16 @@ public class Llamada {
 	protected String tipoDeLlamada;
 	private String emisor;
 	private String remitente;
-	public int dur;
+	public int duracion;
 	
 	public Llamada() {
 		
 	}
-	public Llamada(String s, String p, String p2, Persoona p3, int dur) {
-		this.tipoDeLlamada = s;
-		this.emisor= p;
-		this.remitente= p2;
-		this.dur = dur;
+	public Llamada(String tipoLlamada, String emisor, String remitente, Persoona p3, int duracion) {
+		this.tipoDeLlamada = tipoLlamada;
+		this.emisor= emisor;
+		this.remitente= remitente;
+		this.duracion = duracion;
 	}
 
 	public String getTipoDeLlamada() {
@@ -23,8 +23,8 @@ public class Llamada {
 	public void setTipoDeLlamada(String tipoDeLlamada) {
 		this.tipoDeLlamada = tipoDeLlamada;
 	}
-	public void setEmisor(String q) {
-		emisor = q;
+	public void setEmisor(String emisor) {
+		this.emisor = emisor;
 	}
 	public String getRemitente() {
 		return remitente;
